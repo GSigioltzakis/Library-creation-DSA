@@ -10,7 +10,7 @@
     Φροντίστε να το κάνετε define στο αντίστοιχο .c αρχείο, ως
     int SLOTS;
 */
-extern int SLOTS;
+extern int SLOTS
 
 /* -----------------------------------------
    LOAN: ενεργός δανεισμός (unsorted, O(1) insert/remove)
