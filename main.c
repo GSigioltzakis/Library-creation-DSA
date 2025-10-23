@@ -1,9 +1,9 @@
 #include "Library.h"
 
-int SLOTS = 3;
+int SLOTS;
 library_t library;
 
 int main() {
-    printf("Library system initialized with %d slots.\n", SLOTS);
+    printf("asdasdasdasda\n");
     return 0;
 }
