@@ -8,7 +8,6 @@ void library_init(void) {
     Library->members = NULL;
 }
 
-
 void Slots(int slots) {
     SLOTS = slots;
     printf("Done\n");
@@ -39,8 +38,12 @@ void Genre_book(int gid, char *name) {
     }
     /*we set the struct genre:*/
     new_genre->gid = gid;
-    strncpy(new_genre->name, name, NAME_MAX-1);/*we have to set size MAX-1*/
-    new_genre->name[NAME_MAX-1] = '\0'; /*null termination*/
+    int i;
+    for (i = 0; i < (NAME_MAX - 1) && name[i] != '\0'; i++) {
+       new_genre->name[i] = name[i];
+    }
+    new_genre->name[i] = '\0'; /*null termination*/
+    
     new_genre->books = NULL;
     new_genre->lost_count = 0;
     new_genre->invalid_count = 0;
@@ -57,4 +60,70 @@ void Genre_book(int gid, char *name) {
 
     printf("DONE\n");
 
+}
+
+void register_book(int bid, int gid, char *title) { //supposly BK means book
+    
+    
+    /*find the genre first*/
+    genre_t *curr_genre = Library->genres;
+    genre_t *target = NULL;
+    while (curr_genre != NULL) {
+        if (curr_genre->gid == gid) {
+            target = curr_genre;
+            break;
+        }
+        curr_genre = curr_genre->next;
+    }
+    if (target == NULL) {
+        printf("IGNORED\n");
+        return;
+    }
+    /*check if the book already exists*/
+    curr_genre = Library->genres;
+    while (curr_genre != NULL) {
+        book_t *curr_book = curr_genre->books;
+        while (curr_book != NULL) {
+            if (curr_book->bid == bid) {
+                printf("IGNORED\n");
+                return;
+            }
+            curr_book = curr_book->next;
+        }
+        curr_genre = curr_genre->next;
+    } //check all genres for existing book /end/
+
+    /*Now we cheched all conditions for a book existing already and finding the book's genre, so now we can
+    create a new book(and instert it)*/
+
+    book_t *new_book = (book_t *)malloc(sizeof(book_t));
+    new_book->bid = bid;
+    new_book->gid = gid;
+    int i; //we set it outside the for loop to use it after    
+    for (i = 0; i < (TITLE_MAX - 1) && title[i] != '\0'; i++) {
+        new_book->title[i] = title[i];
+    } //putting the title in the struct 
+    new_book->title[i] = '\0'; //ending with null termination
+    
+    new_book->title[TITLE_MAX-1] = '\0'; //null termination
+    
+    new_book->sum_scores = 0;
+    new_book->n_reviews = 0;
+    new_book->avg = 0;
+    new_book->lost_flag = 0;
+    /*the list must be sorted decending based of the avg, so we already have avg=0 meaning we start from tail (lets call 
+    it the first node). */
+    new_book->next = NULL;
+    if(target->books == NULL){
+        target->books = new_book;
+        new_book->prev = NULL;
+    }else{
+        book_t *temp = target->books; //start from tail
+        while(temp->next != NULL){
+            temp = temp->next;
+        }
+        temp->next = new_book;
+        new_book->prev = temp;
+    }
+    printf("DONE\n");
 }
