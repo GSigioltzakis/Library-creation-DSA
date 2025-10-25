@@ -104,9 +104,7 @@ void register_book(int bid, int gid, char *title) { //supposly BK means book
         new_book->title[i] = title[i];
     } //putting the title in the struct 
     new_book->title[i] = '\0'; //ending with null termination
-    
-    new_book->title[TITLE_MAX-1] = '\0'; //null termination
-    
+        
     new_book->sum_scores = 0;
     new_book->n_reviews = 0;
     new_book->avg = 0;
@@ -124,6 +122,54 @@ void register_book(int bid, int gid, char *title) { //supposly BK means book
         }
         temp->next = new_book;
         new_book->prev = temp;
+    }
+    printf("DONE\n");
+}
+
+void register_member(int sid, char *name){
+    /*the register member's function, we can implement it similar with the Genre()function, only difference is we will add a
+    sentinel node for easier. We will need it on later functions for O(1) insertions and deletions if needed.*/
+
+
+    member_t *curr = Library->members;
+    member_t *prev = NULL;
+    while (curr != NULL && curr->sid < sid) {
+        prev = curr;
+        curr = curr->next;
+    }
+    if(curr != NULL && curr->sid == sid){
+        printf("IGNORED\n");
+        return;
+    }
+    member_t *new_member = (member_t *)malloc(sizeof(member_t));
+    if(new_member == NULL){
+        printf("Memory allocation failed\n");
+        return;
+    }
+    new_member->sid = sid;
+    int i;
+    for (i = 0; i < (NAME_MAX - 1) && name[i] != '\0'; i++) {
+        new_member->name[i] = name[i];
+    }
+    new_member->name[i] = '\0'; /*null termination*/
+    /*----SENTINEL NODE CREATION----*/
+    loan_t *sentinel = (loan_t *)malloc(sizeof(loan_t));
+    if(sentinel == NULL){
+        printf("Memory allocation failed\n");
+        free(new_member); //free previously allocated memory
+        return;
+    }
+    sentinel->sid = -1; /*with the -1 we understand which 'node' lets say, is the sentinel one */
+    sentinel->bid = -1; 
+    sentinel->next = NULL;
+    new_member->loans = sentinel;
+
+    /*we insert the new member in the right place*/
+    new_member->next = curr;
+    if (prev == NULL) {
+        Library->members = new_member;
+    } else {
+        prev->next = new_member; //link previous to new
     }
     printf("DONE\n");
 }
