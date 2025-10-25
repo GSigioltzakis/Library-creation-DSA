@@ -3,7 +3,7 @@ CFLAGS = -Wall -g
 
 all: library  
 
-library: main.o
+library: main.o library.o
 	$(CC) $(CFLAGS) $^ -o $@
 
 %.o: %.c
