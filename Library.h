@@ -2,6 +2,10 @@
 #define LIBRARY_H
 
 #include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 
 #define TITLE_MAX 128
 #define NAME_MAX  64
@@ -121,5 +125,23 @@ typedef struct library {
      + ταξινόμηση remainders (O(#genres log #genres))
      + επιλογή κορυφαίων ανά genre (γραμμική στα seats(g)).
 */
+char* trim_and_dequote(char *str);
+//void library_init(void);      // Optional: Initialize main library struct
+void Slots(int slots);
+// void register_genre(int gid, char *name);
+// void register_book(int bid, int gid, char *title);
+// void register_member(int sid, char *name);
+// void loan_book(int sid, int bid);
+// void return_book(int sid, int bid, char *score_str, char *status);
+// void distribute_display(void);
+// void print_genre(int gid);
+// void print_member(int sid);
+// void print_display(void);
+// void print_stats(void);
+// void library_destroy(void);  // Optional: Free all allocated memory
+
+
+
+
 
 #endif
