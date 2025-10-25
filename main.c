@@ -1,52 +1,30 @@
 #include "Library.h"
 
-int SLOTS;
-library_t library;
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include "Library.h" // You must have this header file
-
 #define MAX_LINE 1024 // Max buffer size for a line
 
+int SLOTS=0;
+library_t *Library;
 
-void library_init(void);      // Optional: Initialize main library struct
-void library_destroy(void);   // Free all allocated memory
-void set_total_slots(int slots);
-// void register_genre(int gid, char *name);
-// void register_book(int bid, int gid, char *title);
-// void register_member(int sid, char *name);
-// void loan_book(int sid, int bid);
-// void return_book(int sid, int bid, char *score_str, char *status);
-// void distribute_display(void);
-// void print_genre(int gid);
-// void print_member(int sid);
-// void print_display(void);
-// void print_stats(void);
 
-/*we need to make a function that doesnt end in a string with 2 words but taking both those words as an input later*/
+/*we need to make a function that doesnt end in a string with 2 words but taking both those words as an input later,
+for example: G 10 "Computer Science" we need both computer and science*/
 char* trim_and_dequote(char *str) {
     char *start = str;
     char *end;
 
-    // Trim leading whitespace
     while (isspace((unsigned char)*start)) {
         start++;
     }
 
-    // Trim trailing whitespace
     end = start + strlen(start) - 1;
-    while (end > start && isspace((unsigned char)*end)) {
+    while (end > start && isspace((unsigned char)*end)) { //instead of *end != ' ' we use isspace to cover all whitespace characters
         *end = '\0';
         end--;
     }
 
-    // Handle quotes
-    if (*start == '"' && *end == '"') {
-        start++; // Skip leading quote
-        *end = '\0'; // Remove trailing quote
+    if (*start == '"' && *end == '"') {//remove quotes if they exist
+        start++; 
+        *end = '\0'; 
     }
     
     return start;
@@ -58,24 +36,23 @@ int main(int argc, char *argv[]) {
     FILE *event_file;
     char line_buffer[MAX_LINE];
     char *trimmed_line;
-    char command[10]; // To store the command token (e.g., "BK", "PG")
+    char command[10]; /*for storing strings like BK CD ...*/
 
     if (argc != 2) {
         fprintf(stderr, "Usage: %s <input_file>\n", argv[0]);
-        exit(EXIT_FAILURE);
+        exit(1);
     }
 
-    event_file = fopen(argv[1], "r");
+    event_file = fopen(argv[1], "r"); //r=read mode
     if (!event_file) {
         perror("fopen error for event file open");
-        exit(EXIT_FAILURE);
+        exit(1);
     }
 
-    // library_init(); // Call your initialization function here
+    library_init(); //library initialization, or seg faults will occur
 
     while (fgets(line_buffer, MAX_LINE, event_file)) {
         
-        // First, trim any whitespace leading the line
         trimmed_line = line_buffer;
         while (trimmed_line && isspace(*trimmed_line)) {
             trimmed_line++;
@@ -85,7 +62,6 @@ int main(int argc, char *argv[]) {
             continue;
         }
 
-        // Parse the first word as the command token
         if (sscanf(trimmed_line, "%9s", command) != 1) {
             continue; 
         }
@@ -95,36 +71,36 @@ int main(int argc, char *argv[]) {
             if (sscanf(trimmed_line, "S %d", &slots) != 1) {
                 fprintf(stderr, "Event S parsing error\n");
             } else {
-                set_total_slots(slots);
+                Slots(slots);
             }
         } 
-        // else if (strcmp(command, "G") == 0) {
-        //     int gid;
-        //     char name_buffer[MAX_LINE];
-        //     if (sscanf(trimmed_line, "G %d %[^\n]", &gid, name_buffer) != 2) {
-        //         fprintf(stderr, "Event G parsing error\n");
-        //     } else {
-        //         register_genre(gid, trim_and_dequote(name_buffer));
-        //     }
-        // } 
-        // else if (strcmp(command, "BK") == 0) { 
-        //     int bid, gid;
-        //     char title_buffer[MAX_LINE];
-        //     if (sscanf(trimmed_line, "BK %d %d %[^\n]", &bid, &gid, title_buffer) != 3) {
-        //         fprintf(stderr, "Event BK parsing error\n");
-        //     } else {
-        //         register_book(bid, gid, trim_and_dequote(title_buffer));
-        //     }
-        // } 
-        // else if (strcmp(command, "M") == 0) {
-        //     int sid;
-        //     char name_buffer[MAX_LINE];
-        //     if (sscanf(trimmed_line, "M %d %[^\n]", &sid, name_buffer) != 2) {
-        //         fprintf(stderr, "Event M parsing error\n");
-        //     } else {
-        //         register_member(sid, trim_and_dequote(name_buffer));
-        //     }
-        // } 
+        else if (strcmp(command, "G") == 0) {
+            int gid;
+            char name_buffer[MAX_LINE];
+            if (sscanf(trimmed_line, "G %d %[^\n]", &gid, name_buffer) != 2) {
+                fprintf(stderr, "Event G parsing error\n");
+            } else {
+                Genre_book(gid, trim_and_dequote(name_buffer));
+            }
+        } 
+        else if (strcmp(command, "BK") == 0) { 
+            int bid, gid;
+            char title_buffer[MAX_LINE];
+            if (sscanf(trimmed_line, "BK %d %d %[^\n]", &bid, &gid, title_buffer) != 3) {
+                fprintf(stderr, "Event BK parsing error\n");
+            } else {
+                register_book(bid, gid, trim_and_dequote(title_buffer));
+            }
+        } 
+        else if (strcmp(command, "M") == 0) {
+            int sid;
+            char name_buffer[MAX_LINE];
+            if (sscanf(trimmed_line, "M %d %[^\n]", &sid, name_buffer) != 2) {
+                fprintf(stderr, "Event M parsing error\n");
+            } else {
+                register_member(sid, trim_and_dequote(name_buffer));
+            }
+        } 
         // else if (strcmp(command, "L") == 0) { 
         //     int sid, bid;
         //     if (sscanf(trimmed_line, "L %d %d", &sid, &bid) != 2) {
@@ -168,7 +144,7 @@ int main(int argc, char *argv[]) {
         //     print_stats();
         // } 
         else {
-            fprintf(stderr, "WARNING: Unrecognized event %s. Continuing...\n", command);
+            fprintf(stderr, "Wrong events: %s\n", command);
         }
     }
     fclose(event_file);

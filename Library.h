@@ -15,6 +15,7 @@
     int SLOTS;
 */
 extern int SLOTS;
+extern struct library *Library;
 
 /* -----------------------------------------
    LOAN: ενεργός δανεισμός (unsorted, O(1) insert/remove)
@@ -126,11 +127,11 @@ typedef struct library {
      + επιλογή κορυφαίων ανά genre (γραμμική στα seats(g)).
 */
 char* trim_and_dequote(char *str);
-//void library_init(void);      // Optional: Initialize main library struct
+void library_init(void);      // Optional: Initialize main library struct
 void Slots(int slots);
-// void register_genre(int gid, char *name);
-// void register_book(int bid, int gid, char *title);
-// void register_member(int sid, char *name);
+void Genre_book(int gid, char *name);
+void register_book(int bid, int gid, char *title);
+void register_member(int sid, char *name);
 // void loan_book(int sid, int bid);
 // void return_book(int sid, int bid, char *score_str, char *status);
 // void distribute_display(void);
