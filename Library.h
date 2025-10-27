@@ -133,13 +133,13 @@ void Genre_book(int gid, char *name);
 void register_book(int bid, int gid, char *title);
 void register_member(int sid, char *name);
 void loan_book(int sid, int bid);
-// void return_book(int sid, int bid, char *score_str, char *status);
+void return_book(int sid, int bid, char *score_str, char *status);
 // void distribute_display(void);
 // void print_genre(int gid);
 // void print_member(int sid);
 // void print_display(void);
 // void print_stats(void);
-// void library_destroy(void);  // Optional: Free all allocated memory
+// void library_free(void);  // Optional: Free all allocated memory
 
 
 

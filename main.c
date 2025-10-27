@@ -148,7 +148,7 @@ int main(int argc, char *argv[]) {
         }
     }
     fclose(event_file);
-    //library_destroy();
+    //library_free();
     
     return 0;
 }

@@ -230,10 +230,13 @@ void loan_book(int sid, int bid) {
     }
     new_loan->sid = sid;
     new_loan->bid = bid;
-    /*Insert at start (after sentinel)*/
+    /*instertion: O(1) push-front after sentinel, so we need to do it in a way we reference it to the member. Thats why we
+    are going to set the new loan to the member's-next-loan.  */
     new_loan->next = target_member->loans->next;
     target_member->loans->next = new_loan;
     printf("DONE\n");
-    
-    
+}
+
+void return_book(int sid, int bid, char *score_str, char *status){
+    /*TO BE IMPLEMENTED LATER*/
 }
