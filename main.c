@@ -101,14 +101,14 @@ int main(int argc, char *argv[]) {
                 register_member(sid, trim_and_dequote(name_buffer));
             }
         } 
-        // else if (strcmp(command, "L") == 0) { 
-        //     int sid, bid;
-        //     if (sscanf(trimmed_line, "L %d %d", &sid, &bid) != 2) {
-        //         fprintf(stderr, "Event L parsing error\n");
-        //     } else {
-        //         loan_book(sid, bid);
-        //     }
-        // } 
+        else if (strcmp(command, "L") == 0) { 
+            int sid, bid;
+            if (sscanf(trimmed_line, "L %d %d", &sid, &bid) != 2) {
+                fprintf(stderr, "Event L parsing error\n");
+            } else {
+                loan_book(sid, bid);
+            }
+        } 
         // else if (strcmp(command, "R") == 0) {
         //     int sid, bid;
         //     char score_str[10], status_str[10];

@@ -63,34 +63,32 @@ void Genre_book(int gid, char *name) {
 }
 
 void register_book(int bid, int gid, char *title) { //supposly BK means book
-    
-    
     /*find the genre first*/
-    genre_t *curr_genre = Library->genres;
+    genre_t *curr_genreenre = Library->genres;
     genre_t *target = NULL;
-    while (curr_genre != NULL) {
-        if (curr_genre->gid == gid) {
-            target = curr_genre;
+    while (curr_genreenre != NULL) {
+        if (curr_genreenre->gid == gid) {
+            target = curr_genreenre;
             break;
         }
-        curr_genre = curr_genre->next;
+        curr_genreenre = curr_genreenre->next;
     }
     if (target == NULL) {
         printf("IGNORED\n");
         return;
     }
     /*check if the book already exists*/
-    curr_genre = Library->genres;
-    while (curr_genre != NULL) {
-        book_t *curr_book = curr_genre->books;
-        while (curr_book != NULL) {
-            if (curr_book->bid == bid) {
+    curr_genreenre = Library->genres;
+    while (curr_genreenre != NULL) {
+        book_t *curr_bookook = curr_genreenre->books;
+        while (curr_bookook != NULL) {
+            if (curr_bookook->bid == bid) {
                 printf("IGNORED\n");
                 return;
             }
-            curr_book = curr_book->next;
+            curr_bookook = curr_bookook->next;
         }
-        curr_genre = curr_genre->next;
+        curr_genreenre = curr_genreenre->next;
     } //check all genres for existing book /end/
 
     /*Now we cheched all conditions for a book existing already and finding the book's genre, so now we can
@@ -172,4 +170,134 @@ void register_member(int sid, char *name){
         prev->next = new_member; //link previous to new
     }
     printf("DONE\n");
+}
+
+/*we will play with the sentinel node in this list. We wil add him at the START lets say, to achive O(1) search, or if we put 
+him at the end we will achive O(n), something that we dont want. */
+/*What we want: find the id of the book, then the sid, and then find a way to INSERT (loan) a book*/
+void loan_book(int sid, int bid) {
+    // genre_t *curr_genre = Library->genres; /*FINDING BID*/
+    // book_t *target_book = NULL; 
+    
+    // while (curr_genre != NULL) {
+    //     book_t *curr_book = curr_genre->books;
+    //     while (curr_book != NULL) {
+    //         if (curr_book->bid == bid) {
+    //             target_book = curr_book;//FOUND!
+    //             break;
+    //         }
+    //         curr_book = curr_book->next;
+    //     }
+    //     if (target_book != NULL) {
+    //         break; //we found it so we break 
+    //     }
+    //     curr_genre = curr_genre->next;
+    // }
+
+    // if (target_book == NULL) {
+    //     printf("IGNORED\n"); 
+    //     return;
+    // }
+    // /*sid*/
+    // member_t *curr_member = Library->members;
+    // member_t *target_member = NULL;
+    // while (curr_member != NULL) {
+    //     if (curr_member->sid == sid) {
+    //         target_member = curr_member; //FOUND!
+    //         break;
+    //     }
+    //     curr_member = curr_member->next;
+    // }
+    // if (target_member == NULL) {
+    //     printf("IGNORED\n");
+    //     return;
+    // }
+
+    // /*Now we have both the book and the member, we need to check if the member has already loaned this book*/
+    // loan_t *curr_loan = target_member->loans->next; //start from the first real loan (after sentinel)
+    // while (curr_loan != NULL) {
+    //     if (curr_loan->bid == bid) {
+    //         printf("IGNORED\n"); //already loaned
+    //         return;
+    //     }
+    //     curr_loan = curr_loan->next;
+    // }
+    // /*Now we can create the new loan and insert it at the start (after sentinel)*/
+    // loan_t *new_loan = (loan_t *)malloc(sizeof(loan_t));
+    // if (new_loan == NULL) {
+    //     printf("Memory allocation failed\n");
+    //     return;
+    // }
+    // new_loan->sid = sid;
+    // new_loan->bid = bid;
+    // /*Insert at start (after sentinel)*/
+    // new_loan->next = target_member->loans->next;
+    // target_member->loans->next = new_loan;
+    // printf("DONE\n");
+    
+    member_t *curr_member = Library->members;
+    while(curr_member != NULL && curr_member->sid <sid){
+        curr_member = curr_member->next; //find the member
+    }   
+    if(curr_member == NULL || curr_member->sid != sid){
+        printf("IGNORED\n");
+        return;
+    }
+
+    book_t *book_found = NULL;
+    genre_t *curr_genre = Library->genres;
+    while(curr_genre != NULL){
+        book_t *curr_book = curr_genre->books;
+        while(curr_book != NULL){
+            if(curr_book->bid == bid){
+                book_found = curr_book;
+                break;
+            }
+            curr_book = curr_book->next;
+        }
+        if(book_found != NULL){
+            break;
+        }
+        curr_genre = curr_genre->next;
+    }
+    
+    curr_genre = curr_genre->next;
+    if(book_found == NULL){
+        printf("IGNORED\n");
+        return;
+    }
+    //check if the book is already loaned
+    loan_t *curr_loan = curr_member->loans->next; //start from the first real loan (after sentinel)
+    while(curr_loan != NULL){
+        if(curr_loan->bid == bid){
+            printf("IGNORED\n");
+            return;
+        }
+        curr_loan = curr_loan->next;
+    }
+    /*now that we checked all of ou r conditions we have to SEARCH in O(1) after sentinel, for our book to loan (insert)*/
+    loan_t *new_loan = (loan_t *)malloc(sizeof(loan_t));
+    while(new_loan !=NULL){
+        if(new_loan->bid == bid){
+            printf("IGNORED\n");
+            return;
+        }
+        new_loan = new_loan->next; //searching for existing loan
+    }
+    /*now after we searched we need to isnert. How we are going to avhive that? we will create another new loan, and we wil
+    give it the components of sid and bid, after that our next must be the next of a member that loaned meaning; member->loans->next
+    and after that, we give that the book (new loan)*/
+    loan_t *new_loan_ins = (loan_t *)malloc(sizeof(loan_t));
+    if(new_loan_ins == NULL){
+        printf("Memory allocation failed\n");
+        return;
+    }
+    new_loan_ins->sid = sid;
+    new_loan_ins->bid = bid;
+
+    new_loan_ins->next = curr_member->loans->next; //inserting at start (after sentinel)
+    curr_member->loans->next = new_loan_ins;
+    printf("DONE\n");
+
+
 }

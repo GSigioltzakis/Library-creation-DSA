@@ -132,7 +132,7 @@ void Slots(int slots);
 void Genre_book(int gid, char *name);
 void register_book(int bid, int gid, char *title);
 void register_member(int sid, char *name);
-// void loan_book(int sid, int bid);
+void loan_book(int sid, int bid);
 // void return_book(int sid, int bid, char *score_str, char *status);
 // void distribute_display(void);
 // void print_genre(int gid);
