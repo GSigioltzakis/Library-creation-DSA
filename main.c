@@ -118,9 +118,9 @@ int main(int argc, char *argv[]) {
                 return_book(sid, bid, score_str, status_str);
             }
         } 
-        // else if (strcmp(command, "D") == 0) { 
-        //     distribute_display();
-        // } 
+        else if (strcmp(command, "D") == 0) { 
+            display();
+        } 
         // else if (strcmp(command, "PG") == 0) { 
         //     int gid;
         //     if (sscanf(trimmed_line, "PG %d", &gid) != 1) {
