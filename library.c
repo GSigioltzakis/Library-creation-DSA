@@ -236,7 +236,9 @@ void loan_book(int sid, int bid) {
     target_member->loans->next = new_loan;
     printf("DONE\n");
 }
-
+/* @NOTE: in the function's parameters, we set the score variable to a string due to "NA" string in 
+test files. Therefore, i had to use a function that turns a string to int(meaning the string "11"->gives us
+int 11), and that function is atoi(); */
 void return_book(int sid, int bid, char *score_str, char *status){
     /*now we need to return a book, meaning we must "delete/remove" the book that a member loaned
     and remove it from the loan list,.*/
@@ -299,7 +301,6 @@ void return_book(int sid, int bid, char *score_str, char *status){
     prev_loan->next = target_loan->next;
     free(target_loan); //free the memory allocated for the loan
     /*now we handle the book return based on status*/
-    // without the string lybrary
     if (strcmp(status, "lost") == 0) {
         target_book->lost_flag = 1;
         book_genre->lost_count += 1;
@@ -308,65 +309,64 @@ void return_book(int sid, int bid, char *score_str, char *status){
         if(strcmp(score_str, "NA")==0){
             printf("DONE\n");
         }else{
-            int score = atoi(score_str);
-            if (score < 0 || score > 10) {
-                // Case: OK, but invalid score
-                book_genre->invalid_count++; // Use saved genre
+            int score = atoi(score_str); //convert string to int (due to "NA")
+            if (score < 0 || score > 10) {//invalid
+                book_genre->invalid_count++;
                 printf("IGNORED\n");
             
             } else {
-                // Case: OK, with VALID score [0..10]
-                
-                // 1. Update stats
                 target_book->sum_scores += score;
                 target_book->n_reviews += 1;
                 target_book->avg = target_book->sum_scores / target_book->n_reviews;
 
-                // 2. Reposition (Splice-out)
-                // We use 'books_genre' which we saved
                 if (target_book->prev != NULL) {
                     target_book->prev->next = target_book->next;
                 } else {
-                    book_genre->books = target_book->next; // It was the head
+                    book_genre->books = target_book->next; //the head of the list that we spliced out(removed)
                 }
                 
-                if (target_book->next != NULL) {
-                    target_book->next->prev = target_book->prev;
+                if (target_book->next != NULL) { 
+                    target_book->next->prev = target_book->prev; 
                 }
                 
-                // 3. Reposition (Splice-in)
-                // We use 'books_genre' again
+                //splice-in
                 book_t *insertion_point = book_genre->books;
                 book_t *prev_point = NULL;
-
-                while (insertion_point != NULL && insertion_point->avg > target_book->avg) {
+                /*now we need to find where we inserted (loaned)the member's book*/
+                while (insertion_point != NULL && insertion_point->avg > target_book->avg) { 
                     prev_point = insertion_point;
                     insertion_point = insertion_point->next;
                 }
-                // (Add tie-breaking logic here if needed, e.g., check bid)
+                //lets assume there is an equal avg, we must sort based on bid ascending
+                if (insertion_point != NULL && insertion_point->avg == target_book->avg) {
+                    while (insertion_point != NULL && insertion_point->avg == target_book->avg && insertion_point->bid < target_book->bid) {
+                        prev_point = insertion_point;
+                        insertion_point = insertion_point->next;
+                    }
+                }
+
                 
-                target_book->next = insertion_point;
+                target_book->next = insertion_point; 
                 target_book->prev = prev_point;
                 
                 if (prev_point != NULL) {
                     prev_point->next = target_book;
                 } else {
-                    book_genre->books = target_book; // New head
+                    book_genre->books = target_book; /*our new head, after we checked and set next and prev*/
                 }
 
                 if (insertion_point != NULL) {
-                    insertion_point->prev = target_book;
+                    insertion_point->prev = target_book; 
                 }
 
-                printf("DONE\n");
+                //printf("DONE\n");
             }
         }
     } else {
-        // Case: Invalid status (e.g., "damaged")
         printf("IGNORED\n");
     }
-
     printf("DONE\n");
-
-
 }
+
+
+
