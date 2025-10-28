@@ -109,15 +109,15 @@ int main(int argc, char *argv[]) {
                 loan_book(sid, bid);
             }
         } 
-        // else if (strcmp(command, "R") == 0) {
-        //     int sid, bid;
-        //     char score_str[10], status_str[10];
-        //     if (sscanf(trimmed_line, "R %d %d %9s %9s", &sid, &bid, score_str, status_str) != 4) {
-        //         fprintf(stderr, "Event R parsing error\n");
-        //     } else {
-        //         return_book(sid, bid, score_str, status_str);
-        //     }
-        // } 
+        else if (strcmp(command, "R") == 0) {
+            int sid, bid;
+            char score_str[10], status_str[10];
+            if (sscanf(trimmed_line, "R %d %d %9s %9s", &sid, &bid, score_str, status_str) != 4) {
+                fprintf(stderr, "Event R parsing error\n");
+            } else {
+                return_book(sid, bid, score_str, status_str);
+            }
+        } 
         // else if (strcmp(command, "D") == 0) { 
         //     distribute_display();
         // } 
@@ -149,6 +149,5 @@ int main(int argc, char *argv[]) {
     }
     fclose(event_file);
     //library_free();
-    
     return 0;
 }
