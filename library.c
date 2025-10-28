@@ -10,6 +10,10 @@ void library_init(void) {
 
 void Slots(int slots) {
     SLOTS = slots;
+    if (slots < 0) {
+        printf("IGNORED\n");
+        return;
+    }
     printf("Done\n");
 }
 
