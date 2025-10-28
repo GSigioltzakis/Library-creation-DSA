@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <math.h>
 
 #define TITLE_MAX 128
 #define NAME_MAX  64
@@ -90,6 +91,12 @@ typedef struct genre {
     book_t **display;     /* δυναμικός πίνακας με pointers στα επιλεγμένα βιβλία για προβολή */
 
     /* Μονοσυνδεδεμένη λίστα όλων των genres ταξινομημένη κατά gid (για εύκολη σάρωση). */
+
+   /*NEW FIELDS FOR EASIER APPROACH AT EVENT D(DISPLAY)*/
+      int calc_points;      /* υπολογισμένοι πόντοι για κατανομή θέσεων */
+      int calc_rem;         /* υπολογισμένο υπόλοιπο για κατανομή θέσεων */   
+      
+
     struct genre *next;
 } genre_t;
 
@@ -134,7 +141,7 @@ void register_book(int bid, int gid, char *title);
 void register_member(int sid, char *name);
 void loan_book(int sid, int bid);
 void return_book(int sid, int bid, char *score_str, char *status);
-// void distribute_display(void);
+void display(void);
 // void print_genre(int gid);
 // void print_member(int sid);
 // void print_display(void);
