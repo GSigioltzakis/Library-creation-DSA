@@ -121,28 +121,28 @@ int main(int argc, char *argv[]) {
         else if (strcmp(command, "D") == 0) { 
             display();
         } 
-        // else if (strcmp(command, "PG") == 0) { 
-        //     int gid;
-        //     if (sscanf(trimmed_line, "PG %d", &gid) != 1) {
-        //         fprintf(stderr, "Event PG parsing error\n");
-        //     } else {
-        //         print_genre(gid);
-        //     }
-        // } 
-        // else if (strcmp(command, "PM") == 0) { 
-        //     int sid;
-        //     if (sscanf(trimmed_line, "PM %d", &sid) != 1) {
-        //         fprintf(stderr, "Event PM parsing error\n");
-        //     } else {
-        //         print_member(sid);
-        //     }
-        // } 
-        // else if (strcmp(command, "PD") == 0) { 
-        //     print_display();
-        // } 
-        // else if (strcmp(command, "PS") == 0) { 
-        //     print_stats();
-        // } 
+        else if (strcmp(command, "PG") == 0) { 
+            int gid;
+            if (sscanf(trimmed_line, "PG %d", &gid) != 1) {
+                fprintf(stderr, "Event PG parsing error\n");
+            } else {
+                print_genre(gid);
+            }
+        } 
+        else if (strcmp(command, "PM") == 0) { 
+            int sid;
+            if (sscanf(trimmed_line, "PM %d", &sid) != 1) {
+                fprintf(stderr, "Event PM parsing error\n");
+            } else {
+                print_member(sid);
+            }
+        } 
+        else if (strcmp(command, "PD") == 0) { 
+            print_display();
+        } 
+        else if (strcmp(command, "PS") == 0) { 
+            print_stats();
+        } 
         else {
             fprintf(stderr, "Wrong events: %s\n", command);
         }
