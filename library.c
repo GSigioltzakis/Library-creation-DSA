@@ -505,10 +505,6 @@ void print_genre(int gid) {
     printf("Genre <%d>: <%s>\n", curr_genre->gid, curr_genre->name);
     book_t *curr_book = curr_genre->books;
     while (curr_book != NULL) {
-        /*
-         * ΔΙΟΡΘΩΣΗ: Η μορφοποίηση πρέπει να είναι ακριβώς: <bid>, <avg>
-         * [cite: 155]
-         */
         printf("      <%d>, <%d>\n", curr_book->bid, curr_book->avg);
         
         curr_book = curr_book->next;
