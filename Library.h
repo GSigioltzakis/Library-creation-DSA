@@ -142,10 +142,10 @@ void register_member(int sid, char *name);
 void loan_book(int sid, int bid);
 void return_book(int sid, int bid, char *score_str, char *status);
 void display(void);
-// void print_genre(int gid);
-// void print_member(int sid);
-// void print_display(void);
-// void print_stats(void);
+void print_genre(int gid);
+void print_member(int sid);
+void print_display(void);
+void print_stats(void);
 // void library_free(void);  // Optional: Free all allocated memory
 
 
