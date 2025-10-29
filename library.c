@@ -10,10 +10,10 @@ void library_init(void) {
 
 void Slots(int slots) {
     SLOTS = slots;
-    if (slots < 0) {
-        printf("IGNORED\n");
-        return;
-    }
+    // if (slots < 0) {  removed for event D(checked there)
+    //     printf("IGNORED\n");
+    //     return;
+    // }
     printf("Done\n");
 }
 
@@ -371,6 +371,120 @@ void return_book(int sid, int bid, char *score_str, char *status){
     }
     printf("DONE\n");
 }
+/*in this event we must distripute the slots based on calculations and genres.
+The goal is to see the most liked book from each genre.*/
+void display(void) {    
+    /*How to achive this: we have 5 phases; 
+        1) for each genre/category calculate the points and find their sum score with n_revies>0 and lost_flag=0
+        2) we must calculate a "quota" meaning our Valid points from (1) / our SLOTS
+        3) need to calculate the seats by; points/quota
+        4) need to calculate the remain: points-(seats*quota) and share the remaining seats
+        based on size(start frm most remain)(if tie then least remain)
+        5) now we find our most liked book: for each genre; find the most seats(with lost_flag=0)
+        and sort the list based on their avarage(avg). if the books are not that many then the seats 
+        remain empty
+    */
+    if (SLOTS <= 0 || Library->genres == NULL) {
+        printf("DONE\n");
+        return;
+    }
 
+    genre_t *curr_genre = Library->genres;
+    int total_valid_points = 0;
 
+    /* 1) traversing the list */
+    while (curr_genre != NULL) { //reset calculations
+        curr_genre->calc_points = 0;
+        curr_genre->calc_rem = 0;
+        curr_genre->slots = 0;
+        if (curr_genre->display != NULL) { 
+            free(curr_genre->display);//old array 
+            curr_genre->display = NULL;
+        }
+
+        book_t *curr_book = curr_genre->books; 
+        while (curr_book != NULL) {
+            if (curr_book->n_reviews > 0 && curr_book->lost_flag == 0) { //if the book is valid
+                curr_genre->calc_points += curr_book->sum_scores; //then add its sum_scores to genre's points
+            }
+            curr_book = curr_book->next;
+        }
+        total_valid_points += curr_genre->calc_points; //points
+        curr_genre = curr_genre->next;
+    }
+
+    if (total_valid_points == 0) {
+        printf("DONE\n");
+        return;
+    }
+
+    /* 2)*/
+    int quota = floor(total_valid_points / SLOTS); //needed flooring
+    int remaining_slots = SLOTS;
+
+    /* 3) calculate seats and remainers */
+    curr_genre = Library->genres;
+    while (curr_genre != NULL) {
+        // ΔΙΟΡΘΩΣΗ: Διαβάζουμε την τιμή που ΗΔΗ υπολογίσαμε
+        if (quota > 0) {
+            curr_genre->slots = curr_genre->calc_points / quota;
+            curr_genre->calc_rem = curr_genre->calc_points % quota;
+        } else {
+            curr_genre->slots = 0;
+            curr_genre->calc_rem = curr_genre->calc_points;
+        }
+        remaining_slots -= curr_genre->slots;
+        curr_genre = curr_genre->next;
+    }
+
+    /*4) distributing remaining slots*/
+    while (remaining_slots > 0) {
+        genre_t *winner = NULL; //we want to find the genre with the best remain!
+        int best_rem = -1;
+
+        curr_genre = Library->genres;
+        while (curr_genre != NULL) { //traversal
+            if (curr_genre->calc_rem > best_rem) {//finding te BEST remain
+                best_rem = curr_genre->calc_rem;
+                winner = curr_genre;
+            } else if (curr_genre->calc_rem == best_rem) {
+                //tie
+                if (winner == NULL || curr_genre->gid < winner->gid) {
+                    winner = curr_genre;
+                }
+            }
+            curr_genre = curr_genre->next;
+        }
+
+        if (winner == NULL) break; 
+
+        winner->slots++;
+        winner->calc_rem = -1; 
+        remaining_slots--; 
+    }
+
+    /*5) now we must create the display array for each genre*/
+    /*since we updated the struct genre with 2 new fields, we need to (not exactly reallocate) but put new memory for the pointers*/
+    curr_genre = Library->genres;
+    while (curr_genre != NULL) {
+        if (curr_genre->slots > 0) {
+            //for the new pointer array
+            curr_genre->display = (book_t **)calloc(curr_genre->slots, sizeof(book_t *));
+            
+            book_t *b_iter = curr_genre->books; //O(N) traversal
+            int filled_count = 0;
+            
+            while (b_iter != NULL && filled_count < curr_genre->slots) {
+                if (b_iter->lost_flag == 0) { 
+                    curr_genre->display[filled_count] = b_iter;
+                    filled_count++;
+                }
+                b_iter = b_iter->next;
+            }
+        }
+        curr_genre = curr_genre->next;
+    }
+
+    printf("DONE\n");
+}
 
