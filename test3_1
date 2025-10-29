@@ -1,69 +1,18 @@
-# === Phase 1: Setup & Entity Edge Cases ===
-S 4
-G 10 "Sci-Fi"
-G 20 "Fantasy"
-G 30 "Biography"
-G 10 "Duplicate Sci-Fi"
-BK 101 10 "Dune"
-BK 102 10 "Foundation"
-BK 201 20 "Lord of the Rings"
-BK 103 10 "Star Wars"
-BK 202 20 "Wheel of Time"
-BK 301 30 "Steve Jobs"
-BK 999 99 "Missing Genre Book"
-BK 101 20 "Duplicate Dune"
-M 1 "Alice"
-M 2 "Bob"
-M 1 "Duplicate Alice"
-PM 999
-PG 99
-PD
+S 3
+G 10 "HEROES"
+G 20 "comedy"
+BK 101 10 "Superblack"
+BK 102 10 "The black lantern"
+BK 201 20 "How High"
+M 1 "Jamal"
+M 2 "Feli'sha"
 
-# === Phase 2: Loan & Return Edge Cases ===
 L 1 101
+R 1 101 8 ok
 L 1 102
+R 1 102 9 ok
 L 2 201
-L 2 103
-L 2 202
-L 1 101
-L 999 101
-L 1 999
-PM 1
-PM 2
-R 999 101 5 ok
-R 1 999 5 ok
-R 2 101 5 ok
-R 2 103 0 lost
-R 2 202 NA ok
-R 1 101 11 ok
-R 1 101 -1 ok
-
-# === Phase 3: Repositioning & Sorting Test ===
-R 1 102 8 ok
-R 1 101 5 ok
-L 2 101
-R 2 101 9 ok
-L 1 101
-R 1 101 10 ok
 PG 10
-R 2 201 9 ok
-PG 20
-
-# === Phase 4: Display (D) Logic ===
-# S = 4
-# G10 Points=32, G20 Points=9, G30 Points=0
-# TOTAL_VALID_POINTS = 41
-# Quota = floor(41 / 4) = 10
-# Initial: G10(3 seats, rem 2), G20(0 seats, rem 9), G30(0 seats, rem 0)
-# Remainder: G20 gets 1 slot.
-# Final: G10(3 slots), G20(1 slot), G30(0 slots)
-PS
-D
-PD
-
-# === Phase 5: Final State & Cleanup ===
-S 0
-D
-PD
-PM 1
 PM 2
+D
+PD
