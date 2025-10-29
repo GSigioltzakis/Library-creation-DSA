@@ -14,7 +14,7 @@ void Slots(int slots) {
     //     printf("IGNORED\n");
     //     return;
     // }
-    printf("Done\n");
+    printf("<S>     Done\n");
 }
 
 void Genre_book(int gid, char *name) {
@@ -62,7 +62,7 @@ void Genre_book(int gid, char *name) {
         prev->next = new_genre; //link previous to new
     }
 
-    printf("DONE\n");
+    printf("<G>     DONE\n");
 
 }
 
@@ -125,7 +125,7 @@ void register_book(int bid, int gid, char *title) { //supposly BK means book
         temp->next = new_book;
         new_book->prev = temp;
     }
-    printf("DONE\n");
+    printf("<BK>    DONE\n");
 }
 
 void register_member(int sid, char *name){
@@ -173,7 +173,7 @@ void register_member(int sid, char *name){
     } else {
         prev->next = new_member; //link previous to new
     }
-    printf("DONE\n");
+    printf("<M>     DONE\n");
 }
 
 /*we will play with the sentinel node in this list. We wil add him at the START lets say, to achive O(1) search, or if we put 
@@ -238,7 +238,7 @@ void loan_book(int sid, int bid) {
     are going to set the new loan to the member's-next-loan.  */
     new_loan->next = target_member->loans->next;
     target_member->loans->next = new_loan;
-    printf("DONE\n");
+    printf("<L>     DONE\n");
 }
 /* @NOTE: in the function's parameters, we set the score variable to a string due to "NA" string in 
 test files. Therefore, i had to use a function that turns a string to int(meaning the string "11"->gives us
@@ -308,10 +308,10 @@ void return_book(int sid, int bid, char *score_str, char *status){
     if (strcmp(status, "lost") == 0) {
         target_book->lost_flag = 1;
         book_genre->lost_count += 1;
-        printf("DONE\n");
+        printf("<R>     DONE\n");
     } else if(strcmp(status, "ok")==0){
         if(strcmp(score_str, "NA")==0){
-            printf("DONE\n");
+            printf("<R>     DONE\n");
         }else{
             int score = atoi(score_str); //convert string to int (due to "NA")
             if (score < 0 || score > 10) {//invalid
@@ -369,7 +369,7 @@ void return_book(int sid, int bid, char *score_str, char *status){
     } else {
         printf("IGNORED\n");
     }
-    printf("DONE\n");
+    printf("<R>     DONE\n");
 }
 /*in this event we must distripute the slots based on calculations and genres.
 The goal is to see the most liked book from each genre.*/
@@ -385,7 +385,7 @@ void display(void) {
         remain empty
     */
     if (SLOTS <= 0 || Library->genres == NULL) {
-        printf("DONE\n");
+        printf("<D>     DONE\n");
         return;
     }
 
@@ -414,7 +414,7 @@ void display(void) {
     }
 
     if (total_valid_points == 0) {
-        printf("DONE\n");
+        printf("<D>     DONE\n");
         return;
     }
 
@@ -437,7 +437,9 @@ void display(void) {
         curr_genre = curr_genre->next;
     }
 
-    /*4) distributing remaining slots*/
+    /*4) distributing remaining slots. We need to have a complexity of O(NlogN) so we will do a simple selection method.
+    This method might be the most efficient, but we will traverse the list each time we want to find the best remain.*/
+
     while (remaining_slots > 0) {
         genre_t *winner = NULL; //we want to find the genre with the best remain!
         int best_rem = -1;
@@ -485,6 +487,103 @@ void display(void) {
         curr_genre = curr_genre->next;
     }
 
-    printf("DONE\n");
+    printf("<D>     DONE\n");
 }
 
+void print_genre(int gid) {
+    genre_t *curr_genre = Library->genres;
+    while (curr_genre != NULL) {
+        if (curr_genre->gid == gid) {
+            break; //FOUND!
+        }
+        curr_genre = curr_genre->next;
+    }
+    if (curr_genre == NULL) {
+        printf("IGNORED\n");
+        return;
+    }
+    printf("Genre <%d>: <%s>\n", curr_genre->gid, curr_genre->name);
+    book_t *curr_book = curr_genre->books;
+    while (curr_book != NULL) {
+        /*
+         * ΔΙΟΡΘΩΣΗ: Η μορφοποίηση πρέπει να είναι ακριβώς: <bid>, <avg>
+         * [cite: 155]
+         */
+        printf("      <%d>, <%d>\n", curr_book->bid, curr_book->avg);
+        
+        curr_book = curr_book->next;
+    }
+}
+void print_member(int sid) {
+    member_t *target_member = NULL;
+    member_t *curr_m = Library->members;
+    while (curr_m != NULL && curr_m->sid < sid) {
+        curr_m = curr_m->next;
+    }
+    if (curr_m != NULL && curr_m->sid == sid) {//FOUND
+        target_member = curr_m;
+    }
+    if (target_member == NULL) {
+        printf("IGNORED(not found <PM>\n");
+        return;
+    }
+    printf("Loans:\n");
+
+    if (target_member != NULL) {
+        loan_t *curr_loan = target_member->loans->next; //after sentinel
+        
+        while (curr_loan != NULL) {
+            printf("    <%d>\n", curr_loan->bid);
+            curr_loan = curr_loan->next;
+        }
+    }else printf("    (book returned :) )\n");
+}
+void print_display(void) {
+    printf("Display:\n");
+    
+    int empty = 0;
+    genre_t *g_iter = Library->genres;
+
+    //traverse the list of genres 
+    while (g_iter != NULL) {
+        if (g_iter->slots > 0 && g_iter->display != NULL) {
+            empty = 1;
+            printf("    <%d>:\n", g_iter->gid);
+
+            //traversing the display array
+            int i;
+            for (i = 0; i < g_iter->slots; i++) {
+                book_t *book = g_iter->display[i];
+                
+                if (book != NULL) { 
+                    printf("    <%d>, <%d>\n", book->bid, book->avg);
+                }
+            }
+        }
+        g_iter = g_iter->next;
+    }
+    if (empty == 0) {
+        printf("    (empty)\n"); 
+    }
+}
+void print_stats(void) {
+    printf("SLOTS=<%d>\n", SLOTS);
+    genre_t *g_iter = Library->genres;
+
+    while (g_iter != NULL) {
+        int current_points = 0;
+        book_t *b_iter = g_iter->books;
+
+        while (b_iter != NULL) {
+            if (b_iter->n_reviews > 0 && b_iter->lost_flag == 0) { //from the display criteria
+                current_points += b_iter->sum_scores; 
+            }
+            b_iter = b_iter->next;
+        }
+
+        printf("    <%d>:\n", g_iter->gid);
+        printf(" points=<%d>\n", current_points);
+
+        g_iter = g_iter->next;
+    }
+}
