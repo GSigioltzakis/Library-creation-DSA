@@ -1,18 +1,30 @@
-### csd5504 Giorgos Sigioltzakhs "Implementation of a "realistic" Librabry using DSA and focused on lists.
+# CSD5504 — Giorgos Sigioltzakhs
+## Implementation of a "realistic" Library using DSA and focused on lists.
 
 ## main.c logic:
-# In our main , i need to find a way to take the input from the test files (wich i are going to -r (read)). So in order to achive that i could use the case/switch statemets, but due to strings attached to the events and not characters (eg: S != PM), i went to an alternative solution: using if/else with scanf and string compare functions. Also i need to make a function that doesnt end in a string with 2 words but taking both those words as an input later, for example: G 10 "Computer Science" i need both computer and science, there fore i created the trim function at main.c
+In our main, I need to find a way to take the input from the test files (which I am going to -r (read)). 
+So in order to achieve that, I could use the case/switch statements, but due to strings attached to the events 
+and not characters (eg: S != PM), I went to an alternative solution: using if/else with scanf and string compare 
+functions. Also, I need to make a function that doesn’t end in a string with 2 words but takes both those words as 
+input later. For example: G 10 "Computer Science" — I need both computer and science, therefore I created the trim 
+function in main.c.
 
 ## library.c logic:
-# Here we implement our events(functions), each function is analised in the .c file with comments. "//" comments are general and small and "/**/" are more explanatory. NOTE: before i started implemented the function i had to create a library initialisation function. 
+Here we implement our events (functions). Each function is analyzed in the .c file with comments. 
+"//" comments are general and small and "/**/" are more explanatory. 
+NOTE: before I started implementing the functions, I had to create a library initialization function.
 
 ## library.h logic:
-# In our header file, i announce our structs, extern global variables for better linking and set our functions for our main to see. One note: in Struct genre_t i added 2 new extra fields for a more easier appronch in an event.
+In our header file, I announce our structs, extern global variables for better linking, 
+and set our functions for our main to see. 
+One note: in Struct genre_t I added 2 new extra fields for an easier approach in an event.
 
 ## Makefile logic:
-# Instead of compiling by hand and write a whole gcc with a lot of flags and files, i simply created a makefile for that. Using "make" it creates a "library" executable and with "make clean" we clear our new obeject and executable files.
+Instead of compiling by hand and writing a whole gcc command with a lot of flags and files, 
+I simply created a Makefile for that. Using "make" it creates a "library" executable and with 
+"make clean" we clear our new object and executable files.
 
-### Test files results:
+## Test files results:
 
 ## test1
 <S>     Done
