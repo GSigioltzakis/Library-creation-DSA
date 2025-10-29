@@ -583,3 +583,45 @@ void print_stats(void) {
         g_iter = g_iter->next;
     }
 }
+void free_books(book_t *book) {
+    while (book) {
+        book_t *next = book->next;
+        free(book);
+        book = next;
+    }
+}
+
+void free_genres(genre_t *genre) {
+    while (genre) {
+        genre_t *next = genre->next;
+        free_books(genre->books);
+        free(genre->display);
+        free(genre);
+        genre = next;
+    }
+}
+
+void free_loans(loan_t *loan) {
+    while (loan) {
+        loan_t *next = loan->next;
+        free(loan);
+        loan = next;
+    }
+}
+
+void free_members(member_t *member) {
+    while (member) {
+        member_t *next = member->next;
+        free_loans(member->loans);
+        free(member);
+        member = next;
+    }
+}
+
+void library_free(void) {
+    if (!Library) return;
+    free_genres(Library->genres);
+    free_members(Library->members);
+    free(Library);
+    Library = NULL;
+}

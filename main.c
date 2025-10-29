@@ -148,6 +148,6 @@ int main(int argc, char *argv[]) {
         }
     }
     fclose(event_file);
-    //library_free();
+    library_free();
     return 0;
 }

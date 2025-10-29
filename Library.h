@@ -146,10 +146,11 @@ void print_genre(int gid);
 void print_member(int sid);
 void print_display(void);
 void print_stats(void);
-// void library_free(void);  // Optional: Free all allocated memory
-
-
-
-
+//free functions
+void free_books(book_t *book);
+void free_genres(genre_t *genre);
+void free_loans(loan_t *loan);
+void free_members(member_t *member);
+void library_free(void);
 
 #endif
