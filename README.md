@@ -27,6 +27,7 @@ I simply created a Makefile for that. Using "make" it creates a "library" execut
 ## Test files results:
 
 ## test1
+```
 <S>     Done
 <G>     DONE
 <G>     DONE
@@ -53,8 +54,9 @@ Display:
     <201>, <9>
 Loans:
 Loans:
-
+```
 ## test2
+```
 <S>     Done
 <G>     DONE
 <BK>    DONE
@@ -77,8 +79,9 @@ IGNORED
 IGNORED
 IGNORED
 Loans:
-
+```
 ## test3_1 (test3 was deleted)
+```
 <S>     Done
 <G>     DONE
 <G>     DONE
@@ -105,3 +108,4 @@ Display:
     <10>:
     <102>, <9>
     <101>, <8>
+```
