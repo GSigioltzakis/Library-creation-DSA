@@ -425,7 +425,6 @@ void display(void) {
     /* 3) calculate seats and remainers */
     curr_genre = Library->genres;
     while (curr_genre != NULL) {
-        // ΔΙΟΡΘΩΣΗ: Διαβάζουμε την τιμή που ΗΔΗ υπολογίσαμε
         if (quota > 0) {
             curr_genre->slots = curr_genre->calc_points / quota;
             curr_genre->calc_rem = curr_genre->calc_points % quota;
