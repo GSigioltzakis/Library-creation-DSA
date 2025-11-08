@@ -1,4 +1,4 @@
-# CSD5504 — Giorgos Sigioltzakhs
+# Giorgos Sigioltzakhs
 ## Implementation of a "realistic" Library using DSA and focused on lists.
 
 ## main.c logic:
@@ -108,4 +108,5 @@ Display:
     <10>:
     <102>, <9>
     <101>, <8>
+
 ```
